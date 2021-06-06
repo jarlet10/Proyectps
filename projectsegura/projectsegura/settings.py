@@ -54,7 +54,7 @@ ROOT_URLCONF = 'projectsegura.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR.joinpath('projectsegura/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
