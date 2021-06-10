@@ -52,3 +52,5 @@ El sistema cuentan con las siguientes funcionalidades:
     * DFDs (nivel0, nivel1, nivelN)
     * Tablas con análisis y medidas de mitigación
 - Código fuente  
+
+prueba windows
