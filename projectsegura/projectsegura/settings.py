@@ -79,7 +79,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'projectsegura',
         'USER': 'general',
-        'PASSWORD': '#prograSegura123#',
+        'PASSWORD': '#PrograSegura123#',
         'HOST': 'localhost',
         'PORT': '3306',
     }

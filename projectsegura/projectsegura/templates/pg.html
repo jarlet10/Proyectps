@@ -25,6 +25,7 @@
     <h1 class="jumbotron" style="text-align: center;">{% block jumbo %}{% endblock %}</h1>
   </header>
 
+  <!-- Contenedor general -->
   <div class="container-fluid">
     <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
       <a class="navbar-brand" href="" >
@@ -34,20 +35,21 @@
         <span class="navbar-toggler-icon"></span>
       </button>
 
-    <div class="collapse navbar-collapse" id='menu'>
-      <ul class="navbar-nav mr-auto">
-          <li class="nav-item ">
-            <a class="nav-link" href="/registrarc">Firmar Archivo</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/">Verificar Firma</a>
-          </li>
-          {% block generarFirmas %}  {% endblock %}
-      </ul>
-    </div>
-    <li>
-      <a class="btn btn-danger" role="button" href="/logout">Cerrar Sesion</a>
-    </li>
+      <!-- Barra de navegacion -->
+      <div class="collapse navbar-collapse" id='menu'>
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item ">
+              <a class="nav-link" href="/registrar_credencial">Registrar Credencial</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/ver_listado">Ver credenciales</a>
+            </li>
+            {% block compartirCredencial %}  {% endblock %}
+        </ul>
+      </div>
+      <li>
+        <a class="btn btn-danger" role="button" href="/logout">Cerrar Sesion</a>
+      </li>
     </nav>
   </div>
 

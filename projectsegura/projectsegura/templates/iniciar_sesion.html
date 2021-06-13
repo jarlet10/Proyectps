@@ -4,4 +4,70 @@
 {% block jumbo %} Iniciar Sesión {% endblock %}
 {% block cuerpo %}
 	
+    <div class="container">
+        <div class="row" style="height: 33px;"></div>
+    </div>
+
+    {% if errores %}
+
+        <!-- Modal backend -->
+        <div class="modal fade" id="modelIdE" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-h  idden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                        <div class="modal-header">
+                                <h4 class="modal-title">Errores</h4>
+                                    <button type="button" class="close text-danger" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                            </div>
+                    <div class="modal-body">
+                        <div class="container-fluid">
+                            <ul class="list-group list-group-flush">
+                                {% for error in errores %}
+                                <li class="list-group-item">{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% block scri %} <script>
+            $(function(){
+                $("#modelIdE").modal('toggle');
+            });
+        </script> {% endblock %}
+
+    {% endif %}
+
+    <!-- Formulario ingresar -->
+    <div class="container">
+        <form action="/iniciar_sesion" method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="usuario">Usuario</label>
+                <input type="text" name="usuario" id="usuario" class="form-control" placeholder="Nick de usuario" value="{{ usuario }}">
+            </div>
+            <div class="form-group">
+                <label for="contraseña">Contraseña</label>
+                <input type="password" class="form-control" name="password" id="password" placeholder="Contraseña" value="{{ contra }}">
+            </div>
+
+            <div class="container">
+                Si no te has registrado: <a href="/registrar">Registrate</a>
+            </div>
+            <div class="container">
+                <div class="row" style="height: 30px;"></div>
+            </div>
+            <button type="submit" class="btn btn-primary">Ingresar</button>
+        </form>
+    </div>
+
+    <div class="container">
+        <div class="row" style="height: 15px;"></div>
+    </div>
 {% endblock %}

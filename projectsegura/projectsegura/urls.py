@@ -22,8 +22,8 @@ urlpatterns = [
     path('registrar',registrar_usuario),
     path('iniciar_sesion',iniciar_sesion),
     path('registrar_credencial',registrar_credencial),
-    path('ver_detalles_credencial', ver_detalles_credencial),
     path('ver_listado', ver_listado_cuentas),
+    path('ver_detalles_credencial', ver_detalles_credencial),
     path('editar_credencial',editar_credencial),
     path('compartir', compartir),
 ]
