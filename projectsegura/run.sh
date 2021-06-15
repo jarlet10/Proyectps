@@ -9,13 +9,13 @@ function modoUso() {
 }
 
 function validar(){
-    [[ "$1" ]] || { echo "Necesitas Selecionar un archivo.env"; modoUso; exit 1; }
-    [[ -f "$1" ]] || { echo "El parametro 1 debe ser un archivo valido"; modoUso; exit 1; }
+    [[ "$1" ]] || { echo "Necesitas Selecionar un archivo.env cifrando"; modoUso; exit 1; }
+    [[ -f "$1" ]] || { echo "El parametro 1 debe ser un archivo valido y cifrado"; modoUso; exit 1; }
 }
 
 validar "$@"
 
-for linea in $(cat "$1"); do
+for linea in $(ccdecrypt -c "$1"); do
     export $linea
 done
 python3 manage.py migrate
