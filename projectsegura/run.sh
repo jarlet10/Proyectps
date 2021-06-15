@@ -18,5 +18,6 @@ validar "$@"
 for linea in $(cat "$1"); do
     export $linea
 done
-
-python manage.py runserver
+python3 manage.py migrate
+python3 manage.py makemigrations
+python3 manage.py runserver
