@@ -12,8 +12,8 @@ from pathlib import Path
 #Para enviar mensaje a telegram bot
 import requests
 
-token = '1862504006:AAEr91Gc0keP4lJkNE59qwK3wAMXrz1CLqU'
-chat_id = '678557081'
+#token = '1862504006:AAEr91Gc0keP4lJkNE59qwK3wAMXrz1CLqU'
+#chat_id = '678557081'
     
 def mandar_mensaje_bot_post(mensaje, token=token, chat_id=chat_id):
     token = os.environ('token')
