@@ -1,6 +1,10 @@
 from django.db import models
 
 # Create your models here.
+class intentos_por_ip(models.Model):
+    ip = models.GenericIPAddressField(primary_key=True)
+    contador = models.IntegerField(default=0)
+    ultima_peticion= models.DateTimeField()
 
 class usuarios(models.Model):
     nombre = models.CharField(max_length=60)

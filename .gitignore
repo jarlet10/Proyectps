@@ -9,10 +9,6 @@ projectsegura/projectsegura/__pycache__/urls.cpython-39.pyc
 projectsegura/projectsegura/__pycache__/wsgi.cpython-39.pyc
 projectsegura/projectsegura/__pycache__/views.cpython-39.pyc
 projectsegura/modelo/__pycache__/__init__.cpython-38.pyc
-projectsegura/modelo/__pycache__/__init__.cpython-38.pyc
-projectsegura/modelo/__pycache__/__init__.cpython-38.pyc
-projectsegura/modelo/__pycache__/__init__.cpython-38.pyc
-projectsegura/modelo/__pycache__/__init__.cpython-38.pyc
 projectsegura/modelo/__pycache__/admin.cpython-38.pyc
 projectsegura/modelo/__pycache__/__init__.cpython-38.pyc
 projectsegura/projectsegura/__pycache__/wsgi.cpython-38.pyc
@@ -25,3 +21,8 @@ projectsegura/modelo/__pycache__/apps.cpython-38.pyc
 projectsegura/modelo/__pycache__/__init__.cpython-38.pyc
 projectsegura/projectsegura/__pycache__/settings.cpython-38.pyc
 projectsegura/projectsegura/__pycache__/urls.cpython-38.pyc
+projectsegura/projectsegura/views.py
+projectsegura/modelo/migrations/__pycache__/0002_intentos_por_ip.cpython-39.pyc
+projectsegura/modelo/migrations/__pycache__/0003_rename_ultima_paticion_intentos_por_ip_ultima_peticion.cpython-39.pyc
+projectsegura/modelo/migrations/0002_intentos_por_ip.py
+projectsegura/modelo/migrations/0003_rename_ultima_paticion_intentos_por_ip_ultima_peticion.py
