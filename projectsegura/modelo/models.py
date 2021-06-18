@@ -11,3 +11,5 @@ class usuarios(models.Model):
     usuario = models.CharField(max_length=30)
     contra = models.CharField(max_length=40)
     correo = models.EmailField()
+    codigo = models.CharField(max_length=10, null=True)
+    duracion = models.DateTimeField(null=True)

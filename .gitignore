@@ -27,3 +27,5 @@ projectsegura/modelo/migrations/__pycache__/0003_rename_ultima_paticion_intentos
 projectsegura/modelo/migrations/0002_intentos_por_ip.py
 projectsegura/modelo/migrations/0003_rename_ultima_paticion_intentos_por_ip_ultima_peticion.py
 projectsegura/projectsegura/__pycache__/settings.cpython-38.pyc
+projectsegura/modelo/migrations/__pycache__/0004_auto_20210617_1611.cpython-39.pyc
+projectsegura/modelo/migrations/0004_auto_20210617_1611.py

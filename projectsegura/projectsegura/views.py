@@ -11,13 +11,12 @@ from pathlib import Path
 #----------------------------------------------------------------------------
 #Para enviar mensaje a telegram bot
 import requests
-
-#token = '1862504006:AAEr91Gc0keP4lJkNE59qwK3wAMXrz1CLqU'
-#chat_id = '678557081'
     
-def mandar_mensaje_bot_post(mensaje, token=token, chat_id=chat_id):
-    token = os.environ('token')
-    chat_id = os.environ('chat_id')
+def mandar_mensaje_bot_post(mensaje):
+    #token = os.environ.get('token')
+    #chat_id = os.environ.get('chat_id')
+    token = '1862504006:AAEr91Gc0keP4lJkNE59qwK3wAMXrz1CLqU'
+    chat_id = '678557081'
     datos = {'chat_id': chat_id, 'text': mensaje}
     url = 'https://api.telegram.org/bot'+ token +'/sendMessage'
     response = requests.post(url = url, data = datos)
@@ -52,7 +51,6 @@ def puede_intentar(ip):
     registro_guardado = registro_guardado[0]
     diferencia_tiempo_segundos = diferencia_tiempo(registro_guardado.ultima_peticion)
     if diferencia_tiempo_segundos >= 60: #debemos resetear
-        print("Entro al if 2")
         registro_guardado.ultima_peticion = datetime.datetime.now(timezone.utc)
         registro_guardado.contador = 1
         registro_guardado.save()
@@ -64,7 +62,7 @@ def puede_intentar(ip):
             registro_guardado.save()
             return True
         else:
-            registro_guardado.ultima_peticion =datetime.datetime.now(timezone.utc)
+            registro_guardado.ultima_peticion = datetime.datetime.now(timezone.utc)
             return False
 
 
@@ -129,30 +127,73 @@ def registrar_usuario(request):
             c = {'errores': errores, 'usuario': usuariox}
             return render(request,t,c)
 
+""" def iniciar_sesion2(request):
+    if request.method == 'GET':
+        t = 'inicar.html'
+        return render(request,t)
+    elif request.method == 'POST':
+        if request.POST.get("form_type") == 'formOne':
+            return HttpResponse('Hola1')
+        elif request.POST.get("form_type") == 'formTwo':
+            return HttpResponse('Hola2') """
+
 #----------------------------------------------------------------
+
 def iniciar_sesion(request):
     if request.method == 'GET':
         t = 'iniciar_sesion.html'
         return render(request,t)
     elif request.method == 'POST':
-        usuariob = request.POST.get('usuario','').strip()
-        contra = request.POST.get('password','').strip()
-        ip = get_client_ip(request)
-        if puede_intentar(ip):
-            try:
-                models.usuarios.objects.get(usuario=usuariob,contra=contra)
-                return redirect('/ver_listado')
-            except:
+        if request.POST.get("form_type") == 'formUno':
+            usuariob = request.POST.get('usuario','').strip()
+            contra = request.POST.get('password','').strip()
+            ip = get_client_ip(request)
+            if puede_intentar(ip):
+                try:
+                    models.usuarios.objects.get(usuario=usuariob,contra=contra)
+                    #Generar codigo para telegram
+                    #isa = models.usuarios.objects.get(usuario="marlag",contra="isa")
+                    codigo = base64.b64encode(os.urandom(6)).decode('utf-8')
+                    usuariobd = models.usuarios.objects.get(usuario=usuariob,contra=contra)
+                    usuariobd.codigo = codigo
+                    usuariobd.duracion = datetime.datetime.now(timezone.utc)
+                    usuariobd.save()
+                    mandar_mensaje_bot_post(codigo)
+                    t = 'iniciar_sesion.html'
+                    c = {'okay': True, 'usuario': usuariob, 'contra': contra}
+                    return render(request,t,c)
+                except:
+                    t = 'iniciar_sesion.html'
+                    errores = ['usuario o contraseña invalidos']
+                    c = {'errores': errores, 'usuario': usuariob, 'contra': contra}
+                    return render(request,t,c)
+            else:
                 t = 'iniciar_sesion.html'
-                errores = ['usuario o contraseña invalidos']
-                c = {'errores': errores, 'usuario': usuariob, 'contra': contra}
+                error = ['Intentos Agotados Por favor Espere 1 minuto']
+                c = {'errores': error}
                 return render(request,t,c)
-        else:
-            t = 'iniciar_sesion.html'
-            errores = ['usuario o contraseña invalidos']
-            error = ['Intentos Agotados Por favor Espere 1 minuto']
-            c = {'errores': error}
-            return render(request,t,c)
+        elif request.POST.get("form_type") == 'formDos':
+            usuariob = request.POST.get('usuario','').strip()
+            contra = request.POST.get('password','').strip()
+            codigou = request.POST.get('codigo').strip()
+            print(usuariob)
+            print(contra)
+            print(codigou)
+            usuariobd = models.usuarios.objects.get(usuario=usuariob,contra=contra)
+            diferencia_tiempo_segundos = diferencia_tiempo(usuariobd.duracion)
+            if diferencia_tiempo_segundos <= 180:
+                print(usuariobd.codigo)
+                if codigou == usuariobd.codigo:
+                    return redirect('/ver_listado')
+            else:
+                usuariobd.duracion = datetime.datetime.now(timezone.utc)
+                t = 'iniciar_sesion.html'
+                error = ['Intentos Agotados Por favor Espere 3 minuto']
+                c = {'errores': error, 'usuario': usuariob, 'contra': contra}
+                return render(request,t,c)
+
+
+
 
 #----------------------------------------------------------------
 def registrar_credencial(request):
