@@ -29,14 +29,18 @@
                                 <input type="hidden" name="password" id="password" value="{{ contra }}">
                                 <div class="form-group">
                                     <label for="codigo">Codigo de Verificacion</label>
-                                    <input type="text" name="codigo" id="codigo" class="form-control" placeholder="Codigo de verificacion">
+                                    <input type="text" name="codigo" id="codigo" class="form-control" placeholder="Codigo de verificacion" value="{{ codigot }}">
                                 </div>
                                 <button type="submit" class="btn btn-primary">Enviar</button>
                             </form>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> -->
+                        {% if erroresf2 %}
+                             {% for error in erroresf2 %}
+                                <li class="list-group-item">{{ error }}</li>
+                             {% endfor %}
+                        {% endif %}
                     </div>
             </div>
         </div>

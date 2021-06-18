@@ -7,7 +7,7 @@ import base64
 import datetime
 from datetime import timezone
 from pathlib import Path
-
+from projectsegura.decoradores import login_requerido
 #----------------------------------------------------------------------------
 #Para enviar mensaje a telegram bot
 import requests
@@ -99,6 +99,9 @@ def tiene_errores_usuario(usuario1,contrac):#recolectar errores jars aqui ves lo
 def registrar_usuario(request):
     if request.method == 'GET':
         t = 'registrar.html'
+        logueado = request.session.get('logueado', False) #redireccionar si ya estas logueado
+        if logueado:
+            return redirect('/ver_listado')
         return render(request,t)
     elif request.method == 'POST':
         t = 'registrar.html'
@@ -122,6 +125,7 @@ def registrar_usuario(request):
 
         if not errores:
             usuariox.save() #gurdar usuario en base de datos
+            request.session['logueado'] = False
             return redirect('/iniciar_sesion')
         else:
             c = {'errores': errores, 'usuario': usuariox}
@@ -142,6 +146,9 @@ def registrar_usuario(request):
 def iniciar_sesion(request):
     if request.method == 'GET':
         t = 'iniciar_sesion.html'
+        logueado = request.session.get('logeado',False)
+        if logueado:
+            return redirect('/ver_listado')
         return render(request,t)
     elif request.method == 'POST':
         if request.POST.get("form_type") == 'formUno':
@@ -176,15 +183,18 @@ def iniciar_sesion(request):
             usuariob = request.POST.get('usuario','').strip()
             contra = request.POST.get('password','').strip()
             codigou = request.POST.get('codigo').strip()
-            print(usuariob)
-            print(contra)
-            print(codigou)
             usuariobd = models.usuarios.objects.get(usuario=usuariob,contra=contra)
             diferencia_tiempo_segundos = diferencia_tiempo(usuariobd.duracion)
             if diferencia_tiempo_segundos <= 180:
-                print(usuariobd.codigo)
                 if codigou == usuariobd.codigo:
+                    request.session['logueado'] = True
+                    request.session['usuario'] = usuariob
                     return redirect('/ver_listado')
+                else:
+                    t = 'iniciar_sesion.html'
+                    error = ['Error el codigo no era el correcto']
+                    c = {'erroresf2': error, 'usuario': usuariob, 'contra': contra, 'codigo': codigou}
+                    return render(request,t,c)
             else:
                 usuariobd.duracion = datetime.datetime.now(timezone.utc)
                 t = 'iniciar_sesion.html'
@@ -192,10 +202,13 @@ def iniciar_sesion(request):
                 c = {'errores': error, 'usuario': usuariob, 'contra': contra}
                 return render(request,t,c)
 
-
-
+@login_requerido
+def salir_login(request):
+    request.session.flush()
+    return redirect('/iniciar_sesion')
 
 #----------------------------------------------------------------
+@login_requerido
 def registrar_credencial(request):
     if request.method == 'GET':
         t = 'registrarcredencial.html'
@@ -205,6 +218,7 @@ def registrar_credencial(request):
         return render(request,t)
 
 #-----------------------------------------------------------------
+@login_requerido
 def ver_detalles_credencial(request):
     if request.method == 'GET':
         t = 'verdetallescredencial.html'
@@ -214,6 +228,7 @@ def ver_detalles_credencial(request):
         return render(request,t)
 
 #----------------------------------------------------------------
+@login_requerido
 def editar_credencial(request):
     if request.method == 'GET':
         t = 'editarcredencial.html'
@@ -223,6 +238,7 @@ def editar_credencial(request):
         return render(request,t)
 
 #----------------------------------------------------------------
+@login_requerido
 def ver_listado_cuentas(request):
     if request.method == 'GET':
         t = 'verlistado.html'
@@ -232,6 +248,7 @@ def ver_listado_cuentas(request):
         return render(request,t)
 
 #----------------------------------------------------------------
+@login_requerido
 def compartir(request):
     if request.method == 'GET':
         t = 'compartir.html'
