@@ -9,7 +9,7 @@ class intentos_por_ip(models.Model):
 class usuarios(models.Model):
     nombre = models.CharField(max_length=60)
     usuario = models.CharField(max_length=30)
-    contra = models.CharField(max_length=40)
+    contra = models.CharField(max_length=200)
     correo = models.EmailField()
     codigo = models.CharField(max_length=10, null=True)
     duracion = models.DateTimeField(null=True)
