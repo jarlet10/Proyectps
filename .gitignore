@@ -32,3 +32,11 @@ projectsegura/modelo/migrations/0004_auto_20210617_1611.py
 projectsegura/projectsegura/__pycache__/decoradores.cpython-39.pyc
 projectsegura/projectsegura/__pycache__/passHash.cpython-39.pyc
 projectsegura/projectsegura/views.py~
+projectsegura/modelo/migrations/__pycache__/0005_alter_usuarios_contra.cpython-39.pyc
+projectsegura/modelo/migrations/__pycache__/0006_alter_usuarios_contra.cpython-39.pyc
+projectsegura/modelo/migrations/__pycache__/0007_auto_20210622_0139.cpython-39.pyc
+projectsegura/modelo/migrations/__pycache__/0008_remove_usuarios_key.cpython-39.pyc
+projectsegura/modelo/migrations/0005_alter_usuarios_contra.py
+projectsegura/modelo/migrations/0006_alter_usuarios_contra.py
+projectsegura/modelo/migrations/0007_auto_20210622_0139.py
+projectsegura/modelo/migrations/0008_remove_usuarios_key.py

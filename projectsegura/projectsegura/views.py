@@ -8,7 +8,7 @@ import datetime
 from datetime import timezone
 from pathlib import Path
 from projectsegura.decoradores import login_requerido
-from projectsegura.passHash import cif
+from projectsegura.passHash import cif, des
 
 #----------------------------------------------------------------------------
 #Para enviar mensaje a telegram bot
@@ -109,7 +109,6 @@ def registrar_usuario(request):
         t = 'registrar.html'
 
         nombre = request.POST.get('nombre','').strip()
-        print(nombre)
         usuario = request.POST.get('nick','').strip()
         correo = request.POST.get('correo','').strip()
         contra = request.POST.get('contra','').strip()
@@ -122,11 +121,14 @@ def registrar_usuario(request):
         usuariox.contra = contra
 
         errores = tiene_errores_usuario(usuariox, contrac)
-        
-        print(errores)
 
         if not errores:
-            usuariox.contra = cif(contra)
+            salt = os.urandom(16)
+            usuariox.contra = cif(contra, salt)
+            salt = base64.b64encode(salt).decode('utf-8')
+            print(salt)
+            print(usuariox.contra)
+            usuariox.salt = salt
             usuariox.save() #gurdar usuario en base de datos
             request.session['logueado'] = False
             return redirect('/iniciar_sesion')
@@ -160,18 +162,26 @@ def iniciar_sesion(request):
             ip = get_client_ip(request)
             if puede_intentar(ip):
                 try:
-                    models.usuarios.objects.get(usuario=usuariob,contra=contra)
-                    #Generar codigo para telegram
-                    #isa = models.usuarios.objects.get(usuario="marlag",contra="isa")
-                    codigo = base64.b64encode(os.urandom(6)).decode('utf-8')
-                    usuariobd = models.usuarios.objects.get(usuario=usuariob,contra=contra)
-                    usuariobd.codigo = codigo
-                    usuariobd.duracion = datetime.datetime.now(timezone.utc)
-                    usuariobd.save()
-                    mandar_mensaje_bot_post(codigo)
-                    t = 'iniciar_sesion.html'
-                    c = {'okay': True, 'usuario': usuariob, 'contra': contra}
-                    return render(request,t,c)
+                    usuarioc = models.usuarios.objects.get(usuario=usuariob)
+                    saltbd = usuarioc.salt
+                    salt = base64.b64decode(saltbd)
+                    key = usuarioc.contra
+                    contrades = des(contra,key,salt)
+                    if contrades:
+                        codigo = base64.b64encode(os.urandom(6)).decode('utf-8')
+                        usuariobd = models.usuarios.objects.get(usuario=usuariob)
+                        usuariobd.codigo = codigo
+                        usuariobd.duracion = datetime.datetime.now(timezone.utc)
+                        usuariobd.save()
+                        mandar_mensaje_bot_post(codigo)
+                        t = 'iniciar_sesion.html'
+                        c = {'okay': True, 'usuario': usuariob, 'contra': contra}
+                        return render(request,t,c)
+                    else:
+                        t = 'iniciar_sesion.html'
+                        errores = ['usuario o contraseña invalidos']
+                        c = {'errores': errores, 'usuario': usuariob, 'contra': contra}
+                        return render(request,t,c)
                 except:
                     t = 'iniciar_sesion.html'
                     errores = ['usuario o contraseña invalidos']
@@ -186,7 +196,7 @@ def iniciar_sesion(request):
             usuariob = request.POST.get('usuario','').strip()
             contra = request.POST.get('password','').strip()
             codigou = request.POST.get('codigo').strip()
-            usuariobd = models.usuarios.objects.get(usuario=usuariob,contra=contra)
+            usuariobd = models.usuarios.objects.get(usuario=usuariob)
             diferencia_tiempo_segundos = diferencia_tiempo(usuariobd.duracion)
             if diferencia_tiempo_segundos <= 180:
                 if codigou == usuariobd.codigo:
@@ -196,7 +206,7 @@ def iniciar_sesion(request):
                 else:
                     t = 'iniciar_sesion.html'
                     error = ['Error el codigo no era el correcto']
-                    c = {'erroresf2': error, 'usuario': usuariob, 'contra': contra, 'codigo': codigou}
+                    c = {'okay':True, 'erroresf2': error, 'usuario': usuariob, 'contra': contra, 'codigo': codigou}
                     return render(request,t,c)
             else:
                 usuariobd.duracion = datetime.datetime.now(timezone.utc)
@@ -204,6 +214,7 @@ def iniciar_sesion(request):
                 error = ['Intentos Agotados Por favor Espere 3 minuto']
                 c = {'errores': error, 'usuario': usuariob, 'contra': contra}
                 return render(request,t,c)
+
 
 @login_requerido
 def salir_login(request):

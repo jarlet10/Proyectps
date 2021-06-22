@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from projectsegura.views import registrar_usuario, iniciar_sesion, registrar_credencial, ver_detalles_credencial, ver_listado_cuentas, editar_credencial, compartir
+from projectsegura.views import registrar_usuario, iniciar_sesion, registrar_credencial, ver_detalles_credencial, ver_listado_cuentas, editar_credencial, compartir, salir_login
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,4 +26,5 @@ urlpatterns = [
     path('ver_detalles_credencial', ver_detalles_credencial),
     path('editar_credencial',editar_credencial),
     path('compartir', compartir),
+    path('logout', salir_login)
 ]
