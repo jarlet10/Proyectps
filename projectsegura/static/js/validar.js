@@ -66,14 +66,6 @@
             event.preventDefault();
          }
          // checar que el pass tien números, mayúsculas, minúsculas y al menos un carácter especial (_,.,-,$)
-         if(!(expreg.test(p))) {
-             errores.innerHTML +=
-             "La contraseña debe tener una longitud minima de 8 caracteres ";
-             errores.innerHTML +=
-             "y contar con al menos una letra mayuscula, un digito y un caracter especial";
-             $("#modelId").modal("show");
-             event.preventDefault();
-         }
 
     };
     
