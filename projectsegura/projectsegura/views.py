@@ -8,6 +8,8 @@ import datetime
 from datetime import timezone
 from pathlib import Path
 from projectsegura.decoradores import login_requerido
+from projectsegura.passHash import cif
+
 #----------------------------------------------------------------------------
 #Para enviar mensaje a telegram bot
 import requests
@@ -124,6 +126,7 @@ def registrar_usuario(request):
         print(errores)
 
         if not errores:
+            usuariox.contra = cif(contra)
             usuariox.save() #gurdar usuario en base de datos
             request.session['logueado'] = False
             return redirect('/iniciar_sesion')
