@@ -9,6 +9,7 @@ from datetime import timezone
 from pathlib import Path
 from projectsegura.decoradores import login_requerido
 from projectsegura.passHash import cif, des
+import re
 
 #----------------------------------------------------------------------------
 #Para enviar mensaje a telegram bot
@@ -96,6 +97,8 @@ def tiene_errores_usuario(usuario1,contrac):#recolectar errores jars aqui ves lo
         errores.append('Contraseña vacia')
     if usuario1.contra != contrac:
         errores.append('Las contraseñas no coinciden')
+    if not re.match('^(?=(?:.*\d))(?=.*[A-Z])(?=.*[a-z])(?=.*[.,*!?@¿¡/#$%&])\S{8,20}$', usuario1.contra):
+        errores.append('La contrasena debe cumplir las politicas')
     return errores
 
 def registrar_usuario(request):
