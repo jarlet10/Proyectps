@@ -169,7 +169,7 @@ def iniciar_sesion(request):
                     saltbd = usuarioc.salt
                     salt = base64.b64decode(saltbd)
                     key = usuarioc.contra
-                    contrades = des(contra,key,salt)
+                    contrades = des(contra,key,salt) # aqui verificas la contraseña cifrafa
                     if contrades:
                         codigo = base64.b64encode(os.urandom(6)).decode('utf-8')
                         usuariobd = models.usuarios.objects.get(usuario=usuariob)

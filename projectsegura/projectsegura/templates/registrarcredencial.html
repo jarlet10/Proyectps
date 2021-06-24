@@ -3,5 +3,126 @@
 {% block titulo %} <title>RegistrarCredenciales</title> {% endblock %}
 {% block jumbo %} Registrar Credencial {% endblock %}
 {% block cuerpo %}
-	
+
+    {% if okay %}
+    
+    <!-- Modal ingresa aqui la contraseña -->
+    <div class="modal fade" id="modelId" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-h  idden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                    <div class="modal-header">
+                            <h4 class="modal-title">Ingresar tu contraseña</h4>
+                            <button type="button" class="close text-danger" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <div class="container-fluid">
+                            <form action="/iniciar_sesion" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="form_type" value="formDos"> <!-- identificar formulario -->
+                                <input type="hidden" name="usuario" id="usuario" value="{{ usuario }}">
+                                <input type="hidden" name="password" id="password" value="{{ contra }}">
+                                <div class="form-group">
+                                    <label for="contraseñaM">Contraseña</label>
+                                    <input type="text" name="contraseñaM" id="contraseñaM" class="form-control" placeholder="contraseña maestra" value="{{ contraseñaM }}">
+                                </div>
+                                <button type="submit" class="btn btn-primary">Confirmar</button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        {% if erroresf2 %}
+                             {% for error in erroresf2 %}
+                                <li class="list-group-item">{{ error }}</li>
+                             {% endfor %}
+                        {% endif %}
+                    </div>
+            </div>
+        </div>
+    </div>
+
+    {% block scr %} <script>
+        $(function(){
+            $("#modelId").modal('toggle');
+        });
+    </script> {% endblock %}
+    
+    {% endif %}
+
+    {% if errores %}
+
+        <!-- Modal si hay errores en backend-->
+        <div class="modal fade" id="modelIdE" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-h  idden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                        <div class="modal-header">
+                                <h4 class="modal-title">Errores</h4>
+                                    <button type="button" class="close text-danger" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                            </div>
+                    <div class="modal-body">
+                        <div class="container-fluid">
+                            <ul class="list-group list-group-flush">
+                                {% for error in errores %}
+                                <li class="list-group-item">{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% block scri %} <script>
+            $(function(){
+                $('[data-toggle="popover"]').popover();
+                $("#modelIdE").modal('toggle');
+            });
+        </script> {% endblock %}
+
+    {% endif %}
+
+    <!-- Formulario -->
+    <div class="container">
+        <form id="formulario" action="/registrar" method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="form_type" value="formUno"> <!-- identificar formulario -->
+
+            <div class="form-group">
+              <label for="nomCuenta">Nombre Cuenta</label>
+              <input type="text"
+                class="form-control" name="nomCuenta" id="nomCuenta" aria-describedby="helpId" placeholder="nombre de la cuenta o servicio" value="{{ usuario.nombreC }}">
+            </div>
+
+            <div class="form-group">
+              <label for="usuarioC">Usuario</label>
+              <input type="text" name="usuarioC" id="usuarioC" class="form-control" placeholder="Nombre con el que se registro en la cuenta o servicio" value="{{ usuario.usuarioC }}" >
+            </div>
+            
+            <div class="form-group">
+                <label for="contraseña">Contraseña</label>
+                <input type="password" class="form-control" name="contraseña" id="contraseña" placeholder="Contraseña de la cuenta o servicio" value="{{ contra }}">
+            </div>
+            
+            <div class="form-group">
+              <label for="url">URL</label>
+              <input type="url"
+                class="form-control" name="url" id="url" aria-describedby="helpId" placeholder="Url del servicio">
+              <small id="helpId" class="form-text text-muted">http://www.sitio.com</small>
+            </div>
+            
+            <div class="container">
+                <div class="row" style="height: 30px;"></div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" >Registrar</button>
+        </form>
+
+        
+    </div>
 {% endblock %}

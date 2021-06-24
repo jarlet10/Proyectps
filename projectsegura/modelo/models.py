@@ -14,3 +14,11 @@ class usuarios(models.Model):
     codigo = models.CharField(max_length=10, null=True)
     duracion = models.DateTimeField(null=True)
     salt = models.CharField(max_length=30, null=True)
+
+class credenciales(models.Model):
+    nombre_cuenta = models.CharField(max_length=30)
+    usuario_cuenta = models.CharField(max_length=60)
+    contra_cuenta = models.TextField()
+    url = models.URLField()
+    iv = models.CharField(max_length=50)
+    usuario_asociado = models.ForeignKey(usuarios, on_delete=models.CASCADE)
