@@ -102,6 +102,18 @@ def tiene_errores_usuario(usuario1,contrac):#recolectar errores jars aqui ves lo
         errores.append('La contrasena debe cumplir las politicas')
     return errores
 
+def tiene_errores_credencial(credencial1):#recolectar errores jars aqui ves lo de expreciones regulares en python
+    errores = []  
+    if credencial1.nombre_cuenta == '':
+        errores.append('Nombre de cuenta vacio')
+    if credencial1.usuario_cuenta == '':
+        errores.append('Usuario de cuenta vacio')
+    if credencial1.contra_cuenta == '':
+        errores.append('Contraseña vacia')
+    if credencial1.url == '':
+        errores.append('Url vacia')
+    return errores
+
 def registrar_usuario(request):
     if request.method == 'GET':
         t = 'registrar.html'
@@ -248,7 +260,6 @@ def registrar_credencial(request):
             contrasena = request.POST.get('contrasena','').strip()
             url = request.POST.get('url','').strip()
             contram = request.POST.get('contrasenaM','').strip()
-
             usuariocookie = request.session.get('usuario','').strip()
 
             try:
@@ -257,13 +268,14 @@ def registrar_credencial(request):
                 salt = base64.b64decode(saltbd)
                 key = usuariopw.contra
                 contrades = des(contram,key,salt) # aqui verificas la contraseña cifrafa
-                print("entro try")
+                
                 if contrades:
                     credencialx = models.credenciales()
                     credencialx.nombre_cuenta = nomCuenta
                     credencialx.usuario_cuenta = usuarioC
                     credencialx.contra_cuenta = contrasena
                     credencialx.url = url
+                    credencialx.usuario_asociado = usuariopw
                     
                     errores = tiene_errores_credencial(credencialx)
                     
