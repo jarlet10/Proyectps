@@ -9,6 +9,7 @@ from datetime import timezone
 from pathlib import Path
 from projectsegura.decoradores import login_requerido
 from projectsegura.passHash import cif, des
+from projectsegura.cifradoSimetrico import cifrar, descifrar, generar_llave_aes_from_password
 import re
 
 #----------------------------------------------------------------------------
@@ -231,8 +232,68 @@ def registrar_credencial(request):
         t = 'registrarcredencial.html'
         return render(request,t)
     elif request.method == 'POST':
-        t = 'registrar.html'
-        return render(request,t)
+        if request.POST.get("form_type") == 'formUno':
+            nomCuenta = request.POST.get('nomCuenta','').strip()
+            usuarioC = request.POST.get('usuarioC','').strip()
+            contrasena = request.POST.get('contrasena','').strip()
+            url = request.POST.get('url','').strip()        
+
+            t = 'registrarcredencial.html'
+            c = {'okay':True, 'nomCuenta': nomCuenta, 'usuarioC': usuarioC, 'contrasena': contrasena, 'url': url}
+            return render(request,t,c)
+            
+        elif request.POST.get("form_type") == 'formDos':
+            nomCuenta = request.POST.get('nomCuenta','').strip()
+            usuarioC = request.POST.get('usuarioC','').strip()
+            contrasena = request.POST.get('contrasena','').strip()
+            url = request.POST.get('url','').strip()
+            contram = request.POST.get('contrasenaM','').strip()
+
+            usuariocookie = request.session.get('usuario','').strip()
+
+            try:
+                usuariopw = models.usuarios.objects.get(usuario=usuariocookie)
+                saltbd = usuariopw.salt
+                salt = base64.b64decode(saltbd)
+                key = usuariopw.contra
+                contrades = des(contram,key,salt) # aqui verificas la contraseña cifrafa
+                print("entro try")
+                if contrades:
+                    credencialx = models.credenciales()
+                    credencialx.nombre_cuenta = nomCuenta
+                    credencialx.usuario_cuenta = usuarioC
+                    credencialx.contra_cuenta = contrasena
+                    credencialx.url = url
+                    
+                    errores = tiene_errores_credencial(credencialx)
+                    
+
+                    if not errores:
+                        iv = os.urandom(16)
+                        contracif = cifrar(contrasena,contram,iv)
+                        contracif = base64.b64encode(contracif).decode('utf-8')        
+                        credencialx.contra_cuenta = contracif
+                        iv = base64.b64encode(iv).decode('utf-8')
+                        credencialx.iv = iv
+                        credencialx.save()
+                        return redirect('/ver_listado')
+
+                    else:
+                        t = 'registrarcredencial.html'
+                        c = {'errores': errores, 'nomCuenta': nomCuenta, 'usuarioC': usuarioC, 'contrasena': contrasena, 'url': url}
+                        return render(request,t,c)
+                else:
+                    t = 'registrarcredencial.html'
+                    errores = ['Contraseña invalida']
+                    c = {'errores': errores, 'nomCuenta': nomCuenta, 'usuarioC': usuarioC, 'contrasena': contrasena, 'url': url, 'contrasenaM': contram}
+                    return render(request,t,c)
+                      
+            except:
+                 t = 'registrarcredencial.html'
+                 errores = ['Ocurrio un error, porfavor comunicate con el administrador']
+                 c = {'errores': errores, 'nomCuenta': nomCuenta, 'usuarioC': usuarioC, 'contrasena': contrasena, 'url': url, 'contrasenaM': contram}
+                 return render(request,t,c)
+
 
 #-----------------------------------------------------------------
 @login_requerido
