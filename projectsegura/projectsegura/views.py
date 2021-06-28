@@ -217,8 +217,9 @@ def iniciar_sesion(request):
             if diferencia_tiempo_segundos <= 180:
                 if codigou == usuariobd.codigo:
                     request.session['logueado'] = True
-                    request.session['usuario'] = usuariob
-                    return redirect('/ver_listado')
+                    respuesta = redirect('/ver_listado')
+                    respuesta.set_cookie('usuario', usuariob, max_age=None, httponly=True, samesite='Strict')
+                    return respuesta
                 else:
                     t = 'iniciar_sesion.html'
                     error = ['Error el codigo no era el correcto']
@@ -235,7 +236,9 @@ def iniciar_sesion(request):
 @login_requerido
 def salir_login(request):
     request.session.flush()
-    return redirect('/iniciar_sesion')
+    respuesta = redirect('/iniciar_sesion')
+    respuesta.delete_cookie('usuario')
+    return respuesta
 
 #----------------------------------------------------------------
 @login_requerido
@@ -260,7 +263,8 @@ def registrar_credencial(request):
             contrasena = request.POST.get('contrasena','').strip()
             url = request.POST.get('url','').strip()
             contram = request.POST.get('contrasenaM','').strip()
-            usuariocookie = request.session.get('usuario','').strip()
+            usuariocookie = request.COOKIES.get('usuario')
+            print(usuariocookie)
 
             try:
                 usuariopw = models.usuarios.objects.get(usuario=usuariocookie)
@@ -276,7 +280,7 @@ def registrar_credencial(request):
                     credencialx.contra_cuenta = contrasena
                     credencialx.url = url
                     credencialx.usuario_asociado = usuariopw
-                    
+
                     errores = tiene_errores_credencial(credencialx)
                     
 
