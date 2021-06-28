@@ -45,3 +45,4 @@ projectsegura/modelo/migrations/__pycache__/0009_credenciales.cpython-39.pyc
 projectsegura/modelo/migrations/0009_credenciales.py
 
 *.py~
+projectsegura/projectsegura/__pycache__/cifradoSimetrico.cpython-39.pyc

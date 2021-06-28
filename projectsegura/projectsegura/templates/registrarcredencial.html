@@ -18,14 +18,16 @@
                     </div>
                     <div class="modal-body text-center">
                         <div class="container-fluid">
-                            <form action="/iniciar_sesion" method="post">
+                            <form action="/registrar_credencial" method="post">
                                 {% csrf_token %}
                                 <input type="hidden" name="form_type" value="formDos"> <!-- identificar formulario -->
-                                <input type="hidden" name="usuario" id="usuario" value="{{ usuario }}">
-                                <input type="hidden" name="password" id="password" value="{{ contra }}">
+                                <input type="hidden" name="nomCuenta" id="nomCuenta" value="{{ nomCuenta }}">
+                                <input type="hidden" name="usuarioC" id="usuarioC" value="{{ usuarioC }}">
+				                <input type="hidden" name="contrasena" id="contrasena" value="{{ contrasena }}">
+				                <input type="hidden" name="url" id="url" value="{{ url }}">
                                 <div class="form-group">
                                     <label for="contraseñaM">Contraseña</label>
-                                    <input type="text" name="contraseñaM" id="contraseñaM" class="form-control" placeholder="contraseña maestra" value="{{ contraseñaM }}">
+                                    <input type="text" name="contrasenaM" id="contrasenaM" class="form-control" placeholder="contraseña maestra" value="{{ contrasenaM }}">
                                 </div>
                                 <button type="submit" class="btn btn-primary">Confirmar</button>
                             </form>
@@ -89,30 +91,30 @@
 
     <!-- Formulario -->
     <div class="container">
-        <form id="formulario" action="/registrar" method="POST">
+        <form id="formulario" action="/registrar_credencial" method="POST">
             {% csrf_token %}
             <input type="hidden" name="form_type" value="formUno"> <!-- identificar formulario -->
 
             <div class="form-group">
               <label for="nomCuenta">Nombre Cuenta</label>
               <input type="text"
-                class="form-control" name="nomCuenta" id="nomCuenta" aria-describedby="helpId" placeholder="nombre de la cuenta o servicio" value="{{ usuario.nombreC }}">
+                class="form-control" name="nomCuenta" id="nomCuenta" aria-describedby="helpId" placeholder="nombre de la cuenta o servicio" value="{{ nomCuenta }}">
             </div>
 
             <div class="form-group">
               <label for="usuarioC">Usuario</label>
-              <input type="text" name="usuarioC" id="usuarioC" class="form-control" placeholder="Nombre con el que se registro en la cuenta o servicio" value="{{ usuario.usuarioC }}" >
+              <input type="text" name="usuarioC" id="usuarioC" class="form-control" placeholder="Nombre con el que se registro en la cuenta o servicio" value="{{ usuarioC }}" >
             </div>
             
             <div class="form-group">
                 <label for="contraseña">Contraseña</label>
-                <input type="password" class="form-control" name="contraseña" id="contraseña" placeholder="Contraseña de la cuenta o servicio" value="{{ contra }}">
+                <input type="password" class="form-control" name="contrasena" id="contrasena" placeholder="Contraseña de la cuenta o servicio" value="{{ contrasena }}">
             </div>
             
             <div class="form-group">
               <label for="url">URL</label>
               <input type="url"
-                class="form-control" name="url" id="url" aria-describedby="helpId" placeholder="Url del servicio">
+                class="form-control" name="url" id="url" aria-describedby="helpId" placeholder="Url del servicio" value="{{ url }}">
               <small id="helpId" class="form-text text-muted">http://www.sitio.com</small>
             </div>
             
