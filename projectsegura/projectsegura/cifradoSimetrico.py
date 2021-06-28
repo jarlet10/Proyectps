@@ -44,16 +44,3 @@ def descifrar(cifrado1, llavepas, iv1): #passc es la pas cifrada
     return plano.decode('utf-8')
 
 ######################################################################
-
-if __name__ == '__main__':
-    print('~~~~~ Cifrado ~~~~~')
-    passwordc = 'passpass'
-    passwordm = 'PasMaster#1'
-    iv = os.urandom(16)
-    print(passwordc)
-    print(passwordm)
-    print(iv)
-    #llave = generar_llave_aes_from_password(passwordm)
-    #print(llave)
-    cifrado=cifrar(passwordc,passwordc,iv)
-    print(cifrado)
