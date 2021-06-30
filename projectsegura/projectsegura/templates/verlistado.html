@@ -3,5 +3,32 @@
 {% block titulo %} <title>ListadoCredenciales</title> {% endblock %}
 {% block jumbo %} Listado De Cuentas {% endblock %}
 {% block cuerpo %}
-	
+<div class="container">
+	<form id="listado" action="/ver_detalles_credencial" method="POST">
+		{% csrf_token %}
+		<ul class="list-group text-center" id="listac">
+			{% for credencial in credencialesx %}
+			<li class="list-group" id="cred" onclick="selectcred()">
+				<h1>{{ credencial.nombre_cuenta }}</h1>
+				<br>
+				<h5>{{ credencial.usuario_cuenta }}</h5>
+				<div style="height: 12px;"></div>
+				<div class="row">
+					<div class="form-group col-sm-5">
+					</div>
+					<div class="form-group col-sm-1">
+						<button type="submit" class="btn btn-outline-primary btn-sm">Detalles</button>
+					</div>
+					<div class="form-group col-sm-1">
+						<button type="submit" class="btn btn-outline-primary btn-sm">Editar</button>
+					</div>
+					<div class="form-group col-sm-5">
+					</div>
+				</div>
+			</li>
+			{% endfor %}
+		</ul>
+	</form>
+</div>
+
 {% endblock %}

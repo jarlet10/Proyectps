@@ -336,7 +336,9 @@ def editar_credencial(request):
 def ver_listado_cuentas(request):
     if request.method == 'GET':
         t = 'verlistado.html'
-        return render(request,t)
+        credencialesx = models.credenciales.objects.all()
+        c = {'credencialesx': credencialesx}
+        return render(request,t,c)
     elif request.method == 'POST':
         t = 'registrar.html'
         return render(request,t)
