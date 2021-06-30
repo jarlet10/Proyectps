@@ -251,10 +251,11 @@ def registrar_credencial(request):
             nomCuenta = request.POST.get('nomCuenta','').strip()
             usuarioC = request.POST.get('usuarioC','').strip()
             contrasena = request.POST.get('contrasena','').strip()
-            url = request.POST.get('url','').strip()        
+            url = request.POST.get('url','').strip()
+            detalles = request.POST.get('detalles','').strip()        
 
             t = 'registrarcredencial.html'
-            c = {'okay':True, 'nomCuenta': nomCuenta, 'usuarioC': usuarioC, 'contrasena': contrasena, 'url': url}
+            c = {'okay':True, 'nomCuenta': nomCuenta, 'usuarioC': usuarioC, 'contrasena': contrasena, 'url': url, 'detalles': detalles}
             return render(request,t,c)
             
         elif request.POST.get("form_type") == 'formDos':
@@ -262,6 +263,7 @@ def registrar_credencial(request):
             usuarioC = request.POST.get('usuarioC','').strip()
             contrasena = request.POST.get('contrasena','').strip()
             url = request.POST.get('url','').strip()
+            detalles = request.POST.get('detalles','').strip()
             contram = request.POST.get('contrasenaM','').strip()
             usuariocookie = request.COOKIES.get('usuario')
             print(usuariocookie)
@@ -279,6 +281,7 @@ def registrar_credencial(request):
                     credencialx.usuario_cuenta = usuarioC
                     credencialx.contra_cuenta = contrasena
                     credencialx.url = url
+                    credencialx.detalles = detalles
                     credencialx.usuario_asociado = usuariopw
 
                     errores = tiene_errores_credencial(credencialx)
@@ -296,18 +299,18 @@ def registrar_credencial(request):
 
                     else:
                         t = 'registrarcredencial.html'
-                        c = {'errores': errores, 'nomCuenta': nomCuenta, 'usuarioC': usuarioC, 'contrasena': contrasena, 'url': url}
+                        c = {'errores': errores, 'nomCuenta': nomCuenta, 'usuarioC': usuarioC, 'contrasena': contrasena, 'url': url, 'detalles': detalles}
                         return render(request,t,c)
                 else:
                     t = 'registrarcredencial.html'
                     errores = ['Contraseña invalida']
-                    c = {'errores': errores, 'nomCuenta': nomCuenta, 'usuarioC': usuarioC, 'contrasena': contrasena, 'url': url, 'contrasenaM': contram}
+                    c = {'errores': errores, 'nomCuenta': nomCuenta, 'usuarioC': usuarioC, 'contrasena': contrasena, 'url': url, 'detalles': detalles, 'contrasenaM': contram}
                     return render(request,t,c)
                       
             except:
                  t = 'registrarcredencial.html'
                  errores = ['Ocurrio un error, porfavor comunicate con el administrador']
-                 c = {'errores': errores, 'nomCuenta': nomCuenta, 'usuarioC': usuarioC, 'contrasena': contrasena, 'url': url, 'contrasenaM': contram}
+                 c = {'errores': errores, 'nomCuenta': nomCuenta, 'usuarioC': usuarioC, 'contrasena': contrasena, 'url': url, 'detalles': detalles, 'contrasenaM': contram}
                  return render(request,t,c)
 
 

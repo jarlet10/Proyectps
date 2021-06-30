@@ -20,5 +20,6 @@ class credenciales(models.Model):
     usuario_cuenta = models.CharField(max_length=60)
     contra_cuenta = models.TextField()
     url = models.URLField()
+    detalles = models.TextField()
     iv = models.CharField(max_length=50)
     usuario_asociado = models.ForeignKey(usuarios, on_delete=models.CASCADE)
