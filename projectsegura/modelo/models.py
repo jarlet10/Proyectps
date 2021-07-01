@@ -18,8 +18,8 @@ class usuarios(models.Model):
 class credenciales(models.Model):
     nombre_cuenta = models.CharField(max_length=30)
     usuario_cuenta = models.CharField(max_length=60)
-    contra_cuenta = models.TextField()
+    contra_cuenta = models.TextField(null=True)
     url = models.URLField()
-    detalles = models.TextField()
+    detalles = models.TextField(default='Sin detalles')
     iv = models.CharField(max_length=50)
     usuario_asociado = models.ForeignKey(usuarios, on_delete=models.CASCADE)

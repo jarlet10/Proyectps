@@ -167,7 +167,7 @@ def registrar_usuario(request):
 def iniciar_sesion(request):
     if request.method == 'GET':
         t = 'iniciar_sesion.html'
-        logueado = request.session.get('logeado',False)
+        logueado = request.session.get('logueado',False)
         if logueado:
             return redirect('/ver_listado')
         return render(request,t)
@@ -217,9 +217,10 @@ def iniciar_sesion(request):
             if diferencia_tiempo_segundos <= 180:
                 if codigou == usuariobd.codigo:
                     request.session['logueado'] = True
-                    respuesta = redirect('/ver_listado')
-                    respuesta.set_cookie('usuario', usuariob, max_age=None, httponly=True, samesite='Strict')
-                    return respuesta
+                    request.session['usuario'] = usuariob
+                    #respuesta = redirect('/ver_listado')
+                    #respuesta.set_cookie('usuario', usuariob, max_age=None, httponly=True, samesite='Strict')
+                    return redirect('/ver_listado')
                 else:
                     t = 'iniciar_sesion.html'
                     error = ['Error el codigo no era el correcto']
@@ -236,9 +237,7 @@ def iniciar_sesion(request):
 @login_requerido
 def salir_login(request):
     request.session.flush()
-    respuesta = redirect('/iniciar_sesion')
-    respuesta.delete_cookie('usuario')
-    return respuesta
+    return redirect('/iniciar_sesion')
 
 #----------------------------------------------------------------
 @login_requerido
@@ -247,6 +246,7 @@ def registrar_credencial(request):
         t = 'registrarcredencial.html'
         return render(request,t)
     elif request.method == 'POST':
+
         if request.POST.get("form_type") == 'formUno':
             nomCuenta = request.POST.get('nomCuenta','').strip()
             usuarioC = request.POST.get('usuarioC','').strip()
@@ -265,8 +265,8 @@ def registrar_credencial(request):
             url = request.POST.get('url','').strip()
             detalles = request.POST.get('detalles','').strip()
             contram = request.POST.get('contrasenaM','').strip()
-            usuariocookie = request.COOKIES.get('usuario')
-            print(usuariocookie)
+            #usuariocookie = request.COOKIES.get('usuario')
+            usuariocookie = request.session.get('usuario','').strip()
 
             try:
                 usuariopw = models.usuarios.objects.get(usuario=usuariocookie)
@@ -316,34 +316,145 @@ def registrar_credencial(request):
 
 #-----------------------------------------------------------------
 @login_requerido
-def ver_detalles_credencial(request):
-    if request.method == 'GET':
-        t = 'verdetallescredencial.html'
-        return render(request,t)
-    elif request.method == 'POST':
-        t = 'registrar.html'
-        return render(request,t)
-
-#----------------------------------------------------------------
-@login_requerido
-def editar_credencial(request):
-    if request.method == 'GET':
-        t = 'editarcredencial.html'
-        return render(request,t)
-    elif request.method == 'POST':
-        t = 'registrar.html'
-        return render(request,t)
-
-#----------------------------------------------------------------
-@login_requerido
 def ver_listado_cuentas(request):
     if request.method == 'GET':
         t = 'verlistado.html'
-        credencialesx = models.credenciales.objects.all()
+        usuariocookie = request.session.get('usuario','').strip()
+        usuariopw = models.usuarios.objects.get(usuario=usuariocookie)
+        pk = usuariopw.id
+        credencialesx = models.credenciales.objects.all().filter(usuario_asociado=pk)
         c = {'credencialesx': credencialesx}
         return render(request,t,c)
     elif request.method == 'POST':
-        t = 'registrar.html'
+        
+        if request.POST.get("form_type") == 'formUno':
+            t = 'verlistado.html'
+            credencialesx = models.credenciales.objects.all()
+            c = {'credencialesx': credencialesx}
+            return render(request,t,c)
+
+        if request.POST.get("form_type") == 'formDos':
+            t = 'verlistado.html'
+            nombreCuenta = request.POST.get('nombreCuenta','').strip()
+            usuarioCuenta = request.POST.get('usuarioCuenta','').strip()
+            request.session['logueadov'] = True
+            request.session['nombreC'] = nombreCuenta
+            request.session['usC'] = usuarioCuenta
+            
+
+            return redirect('/ver_detalles_credencial')
+
+        elif request.POST.get("form_type") == 'formTres':
+            nombreCuenta = request.POST.get('nombreCuenta','').strip()
+            usuarioCuenta = request.POST.get('usuarioCuenta','').strip()
+            request.session['logueadoe'] = True
+            request.session['nombreC'] = nombreCuenta
+            request.session['usC'] = usuarioCuenta
+            
+            return redirect('/editar_credencial')
+
+#----------------------------------------------------------------
+@login_requerido
+def editar_cuenta(request):
+    if request.method == 'GET':
+        t = 'editarcredencial.html'
+        logueadoe = request.session.get('logueadoe',False)
+        if logueadoe:
+           return render(request,t)
+        return redirect('/ver_listado')
+    elif request.method == 'POST':
+        t = 'editarcredencial.html'
+        return HttpResponse('nose')
+
+#----------------------------------------------------------------
+@login_requerido
+def ver_detalles_cuenta(request):
+    if request.method == 'GET':
+        t = 'verdetallescuenta.html'
+        logueadov = request.session.get('logueadov',False)
+        if not logueadov:
+           return redirect('/ver_listado')
+
+        nombreCuenta = request.session.get('nombreC','').strip()
+        usuarioCuenta = request.session.get('usC','').strip()
+        usuariocookie = request.session.get('usuario','').strip()
+        
+        try:
+            usuariopw = models.usuarios.objects.get(usuario=usuariocookie)
+            pk = usuariopw.id
+            credenciales = models.credenciales.objects.all().filter(usuario_asociado=pk).filter(nombre_cuenta=nombreCuenta).filter(usuario_cuenta=usuarioCuenta)
+            #print(credencial.nombre_cuenta)
+            c = {'contracifrada': True, 'credenciales': credenciales}
+            return render(request,t,c)
+        except:
+           errores =['Ocurrio un error comunicate con el administrador']
+           c = {'errores': errores}
+           return render(request,t,c)
+
+    elif request.method == 'POST':
+        t = 'verdetallescuenta.html'
+        usuariocookie = request.session.get('usuario','').strip()
+        nombreCuenta = request.session.get('nombreC','').strip()
+        usuarioCuenta = request.session.get('usC','').strip()
+
+        if request.POST.get("form_type") == 'formUno':
+            try:
+                usuariopw = models.usuarios.objects.get(usuario=usuariocookie)
+                pk = usuariopw.id
+                credenciales = models.credenciales.objects.all().filter(usuario_asociado=pk).filter(nombre_cuenta=nombreCuenta).filter(usuario_cuenta=usuarioCuenta)
+                #print(credencial.nombre_cuenta)
+                c = {'okay': True,'contracifrada': True,'credenciales': credenciales}
+                return render(request,t,c)
+            except:
+                errores =['Ocurrio un error comunicate con el administrador']
+                c = {'errores': errores}
+                return render(request,t,c)
+            
+        elif request.POST.get("form_type") == 'formDos':
+            contram = request.POST.get('contrasenaM','').strip()
+            usuariopw = models.usuarios.objects.get(usuario=usuariocookie)
+            saltbd = usuariopw.salt
+            salt = base64.b64decode(saltbd)
+            key = usuariopw.contra
+            contrades = des(contram,key,salt) # aqui verificas la contraseña cifrafa
+                
+            if contrades:
+                try:
+                    pk = usuariopw.id
+                    credenciales = models.credenciales.objects.all().filter(usuario_asociado=pk).filter(nombre_cuenta=nombreCuenta).filter(usuario_cuenta=usuarioCuenta)
+                    usuariopw = models.usuarios.objects.get(usuario=usuariocookie)
+                    credencial = models.credenciales.objects.get(nombre_cuenta=nombreCuenta, usuario_cuenta=usuarioCuenta)
+                    contracifrada = credencial.contra_cuenta
+                    iv = credencial.iv
+                    #contracifrada = base64.b64decode(contracifrada)
+                    #iv = base64.b64decode(iv)
+                    contradescifrada = descifrar(contracifrada, contram, iv)
+                    c = {'credenciales': credenciales,'contradescifrada': contradescifrada}
+                    return render(request,t,c)
+                except:
+                    errores =['Ocurrio un error comunicate con el administrador']
+                    c = {'errores': errores}
+                    return render(request,t,c)
+            else:
+                usuariopw = models.usuarios.objects.get(usuario=usuariocookie)
+                pk = usuariopw.id
+                credenciales = models.credenciales.objects.all().filter(usuario_asociado=pk).filter(nombre_cuenta=nombreCuenta).filter(usuario_cuenta=usuarioCuenta)
+                #print(credencial.nombre_cuenta)
+                errores = ['Contraseña invalida']
+                c = {'okay': True,'contracifrada': True,'erroresf2': errores,'credenciales': credenciales}
+                return render(request,t,c)
+        elif request.POST.get("form_type") == 'formTres':
+            try:
+                usuariopw = models.usuarios.objects.get(usuario=usuariocookie)
+                pk = usuariopw.id
+                credenciales = models.credenciales.objects.all().filter(usuario_asociado=pk).filter(nombre_cuenta=nombreCuenta).filter(usuario_cuenta=usuarioCuenta)
+                #print(credencial.nombre_cuenta)
+                c = {'contracifrada': True, 'credenciales': credenciales}
+                return render(request,t,c)
+            except:
+                errores =['Ocurrio un error comunicate con el administrador']
+                c = {'errores': errores}
+                return render(request,t,c)
         return render(request,t)
 
 #----------------------------------------------------------------
