@@ -1,7 +1,7 @@
 {% extends 'pg.html' %} 
 {% block scr %} <script src="/static/js/validar.js"></script> {% endblock %}
 {% block titulo %} <title>Registro</title> {% endblock %}
-{% block jumbo %} Registrar Usuario {% endblock %}
+{% block jumbo %} Registrar usuario {% endblock %}
 {% block cuerpo %}
 	
     <!-- Modal Fade Politicas si hay errores en javascript aparece este modal-->
@@ -51,10 +51,10 @@
                         <button type="button" class="btn btn-sm btn-light" data-toggle="popover" title="Politica de Contraseñas" data-placement="left" data-html="true" data-content="La contraseña debe tener solo letras y numeros del alfabeto latino.<br/>
                           La contraseña debe tener al menos:<br/>
                             8 caracteres<br/>
-                            1 letra mayuscula<br/>
-                            1 numero<br/>
-                            1 letra minuscula <br/>
-                            1 caracter exclusivo(.,*!?@¿¡/#$%&)">Politica de contraseñas</button>
+                            1 letra mayúscula<br/>
+                            1 número<br/>
+                            1 letra minúscula <br/>
+                            1 caracter especial(.,*!?@¿¡/#$%&)">Politica de contraseñas</button>
                         <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> -->
                     </div>
                 </div>
@@ -85,8 +85,8 @@
             </div>
             
             <div class="form-group">
-              <label for="correo">Correo Electronico</label>
-              <input type="email" class="form-control" name="correo" id="correo" aria-describedby="emailHelpId" placeholder="Correo Electronico" value="{{ usuario.correo }}">
+              <label for="correo">Correo electronico</label>
+              <input type="email" class="form-control" name="correo" id="correo" aria-describedby="emailHelpId" placeholder="Correo electronico" value="{{ usuario.correo }}">
               <small id="emailHelpId" class="form-text text-muted">email@example.com</small>
             </div>
             

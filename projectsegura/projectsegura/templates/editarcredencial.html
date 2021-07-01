@@ -1,7 +1,7 @@
 {% extends 'pg.html' %} 
 
 {% block titulo %} <title>EditarCredencial</title> {% endblock %}
-{% block jumbo %} Editar Credenciales {% endblock %}
+{% block jumbo %} Editar credenciales {% endblock %}
 {% block cuerpo %}
 	{% if okay %}
     
@@ -27,7 +27,7 @@
                                 <input type="hidden" name="detalles" id="detalles" value="{{ detalles }}">
                                 <div class="form-group">
                                     <label for="contraseñaM">Contraseña</label>
-                                    <input type="password" name="contrasenaM" id="contrasenaM" class="form-control" placeholder="contraseña maestra" value="{{ contrasenaM }}">
+                                    <input type="password" name="contrasenaM" id="contrasenaM" class="form-control" placeholder="Contraseña maestra" value="{{ contrasenaM }}">
                                 </div>
                                 <button type="submit" class="btn btn-primary">Confirmar</button>
                             </form>

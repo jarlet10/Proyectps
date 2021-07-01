@@ -195,17 +195,17 @@ def iniciar_sesion(request):
                         return render(request,t,c)
                     else:
                         t = 'iniciar_sesion.html'
-                        errores = ['usuario o contraseña invalidos']
+                        errores = ['Usuario o contraseña invalidos']
                         c = {'errores': errores, 'usuario': usuariob, 'contra': contra}
                         return render(request,t,c)
                 except:
                     t = 'iniciar_sesion.html'
-                    errores = ['usuario o contraseña invalidos']
+                    errores = ['Usuario o contraseña invalidos']
                     c = {'errores': errores, 'usuario': usuariob, 'contra': contra}
                     return render(request,t,c)
             else:
                 t = 'iniciar_sesion.html'
-                error = ['Intentos Agotados Por favor Espere 1 minuto']
+                error = ['Intentos agotados, por favor espere 1 minuto']
                 c = {'errores': error}
                 return render(request,t,c)
         elif request.POST.get("form_type") == 'formDos':
@@ -223,13 +223,13 @@ def iniciar_sesion(request):
                     return redirect('/ver_listado')
                 else:
                     t = 'iniciar_sesion.html'
-                    error = ['Error el codigo no era el correcto']
+                    error = ['Error, el codigo no era el correcto']
                     c = {'okay':True, 'erroresf2': error, 'usuario': usuariob, 'contra': contra, 'codigo': codigou}
                     return render(request,t,c)
             else:
                 usuariobd.duracion = datetime.datetime.now(timezone.utc)
                 t = 'iniciar_sesion.html'
-                error = ['Intentos Agotados Por favor Espere 3 minuto']
+                error = ['Intentos agotados, por favor espere 3 minutos']
                 c = {'errores': error, 'usuario': usuariob, 'contra': contra}
                 return render(request,t,c)
 
@@ -371,7 +371,7 @@ def editar_cuenta(request):
             return render(request,t,c)
             
         except:
-           errores =['Ocurrio un error comunicate con el administrador']
+           errores =['Ocurrio un error, comunicate con el administrador']
            c = {'errores': errores}
            return render(request,t,c)
 
@@ -497,7 +497,7 @@ def ver_detalles_cuenta(request):
             c = {'contracifrada': True, 'credenciales': credenciales}
             return render(request,t,c)
         except:
-           errores =['Ocurrio un error comunicate con el administrador']
+           errores =['Ocurrio un error, comunicate con el administrador']
            c = {'errores': errores}
            return render(request,t,c)
 
@@ -516,7 +516,7 @@ def ver_detalles_cuenta(request):
                 c = {'okay': True,'contracifrada': True,'credenciales': credenciales}
                 return render(request,t,c)
             except:
-                errores =['Ocurrio un error comunicate con el administrador']
+                errores =['Ocurrio un error, comunicate con el administrador']
                 c = {'errores': errores}
                 return render(request,t,c)
             
@@ -542,7 +542,7 @@ def ver_detalles_cuenta(request):
                     c = {'credenciales': credenciales,'contradescifrada': contradescifrada}
                     return render(request,t,c)
                 except:
-                    errores =['Ocurrio un error comunicate con el administrador']
+                    errores =['Ocurrio un error, comunicate con el administrador']
                     c = {'errores': errores}
                     return render(request,t,c)
             else:
@@ -562,7 +562,7 @@ def ver_detalles_cuenta(request):
                 c = {'contracifrada': True, 'credenciales': credenciales}
                 return render(request,t,c)
             except:
-                errores =['Ocurrio un error comunicate con el administrador']
+                errores =['Ocurrio un error, comunicate con el administrador']
                 c = {'errores': errores}
                 return render(request,t,c)
         return render(request,t)

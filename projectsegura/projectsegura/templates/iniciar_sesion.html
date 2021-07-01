@@ -1,7 +1,7 @@
 {% extends 'pg.html' %} 
 
 {% block titulo %} <title>ListadoCredenciales</title> {% endblock %}
-{% block jumbo %} Iniciar Sesión {% endblock %}
+{% block jumbo %} Iniciar sesión {% endblock %}
 {% block cuerpo %}
 	
     <div class="container">
@@ -15,7 +15,7 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                     <div class="modal-header">
-                            <h4 class="modal-title">Ingresar codigo</h4>
+                            <h4 class="modal-title">Ingresar código</h4>
                                 <button type="button" class="close text-danger" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
@@ -28,8 +28,8 @@
                                 <input type="hidden" name="usuario" id="usuario" value="{{ usuario }}">
                                 <input type="hidden" name="password" id="password" value="{{ contra }}">
                                 <div class="form-group">
-                                    <label for="codigo">Codigo de Verificacion</label>
-                                    <input type="text" name="codigo" id="codigo" class="form-control" placeholder="Codigo de verificacion" value="{{ codigot }}">
+                                    <label for="codigo">Código de verificación</label>
+                                    <input type="text" name="codigo" id="codigo" class="form-control" placeholder="Código de verificación" value="{{ codigot }}">
                                 </div>
                                 <button type="submit" class="btn btn-primary">Enviar</button>
                             </form>
