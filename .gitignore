@@ -48,3 +48,5 @@ projectsegura/modelo/migrations/0009_credenciales.py
 projectsegura/projectsegura/__pycache__/cifradoSimetrico.cpython-39.pyc
 projectsegura/modelo/migrations/__pycache__/0010_auto_20210630_1506.cpython-39.pyc
 projectsegura/modelo/migrations/0010_auto_20210630_1506.py
+projectsegura/modelo/migrations/__pycache__/0011_alter_credenciales_detalles.cpython-39.pyc
+projectsegura/modelo/migrations/0011_alter_credenciales_detalles.py

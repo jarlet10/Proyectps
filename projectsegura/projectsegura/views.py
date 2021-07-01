@@ -243,7 +243,7 @@ def salir_login(request):
 @login_requerido
 def registrar_credencial(request):
     if request.method == 'GET':
-        t = 'registrarcredencial.html'
+        t = 'editarcredencial.html'
         return render(request,t)
     elif request.method == 'POST':
 
@@ -254,7 +254,7 @@ def registrar_credencial(request):
             url = request.POST.get('url','').strip()
             detalles = request.POST.get('detalles','').strip()        
 
-            t = 'registrarcredencial.html'
+            t = 'editarcredencial.html'
             c = {'okay':True, 'nomCuenta': nomCuenta, 'usuarioC': usuarioC, 'contrasena': contrasena, 'url': url, 'detalles': detalles}
             return render(request,t,c)
             
@@ -298,17 +298,17 @@ def registrar_credencial(request):
                         return redirect('/ver_listado')
 
                     else:
-                        t = 'registrarcredencial.html'
+                        t = 'editarcredencial.html'
                         c = {'errores': errores, 'nomCuenta': nomCuenta, 'usuarioC': usuarioC, 'contrasena': contrasena, 'url': url, 'detalles': detalles}
                         return render(request,t,c)
                 else:
-                    t = 'registrarcredencial.html'
+                    t = 'editarcredencial.html'
                     errores = ['Contraseña invalida']
-                    c = {'errores': errores, 'nomCuenta': nomCuenta, 'usuarioC': usuarioC, 'contrasena': contrasena, 'url': url, 'detalles': detalles, 'contrasenaM': contram}
+                    c = {'okay': True,'erroresf2': errores, 'nomCuenta': nomCuenta, 'usuarioC': usuarioC, 'contrasena': contrasena, 'url': url, 'detalles': detalles, 'contrasenaM': contram}
                     return render(request,t,c)
                       
             except:
-                 t = 'registrarcredencial.html'
+                 t = 'editarcredencial.html'
                  errores = ['Ocurrio un error, porfavor comunicate con el administrador']
                  c = {'errores': errores, 'nomCuenta': nomCuenta, 'usuarioC': usuarioC, 'contrasena': contrasena, 'url': url, 'detalles': detalles, 'contrasenaM': contram}
                  return render(request,t,c)
@@ -359,12 +359,122 @@ def editar_cuenta(request):
     if request.method == 'GET':
         t = 'editarcredencial.html'
         logueadoe = request.session.get('logueadoe',False)
-        if logueadoe:
-           return render(request,t)
-        return redirect('/ver_listado')
+        if not logueadoe:
+            return redirect('/ver_listado')
+    
+        nombreCuenta = request.session.get('nombreC','').strip()
+        usuarioCuenta = request.session.get('usC','').strip()
+        try:
+
+            credencial = models.credenciales.objects.get(nombre_cuenta=nombreCuenta, usuario_cuenta=usuarioCuenta)
+            c = {'credencial': credencial, 'nombreCuenta': nombreCuenta}
+            return render(request,t,c)
+            
+        except:
+           errores =['Ocurrio un error comunicate con el administrador']
+           c = {'errores': errores}
+           return render(request,t,c)
+
     elif request.method == 'POST':
-        t = 'editarcredencial.html'
-        return HttpResponse('nose')
+        nombreCuenta = request.session.get('nombreC','').strip()
+        usuarioCuenta = request.session.get('usC','').strip()
+        if request.POST.get("form_type") == 'formUno':        
+            nomCuenta = request.POST.get('nomCuenta','').strip()
+            usuarioC = request.POST.get('usuarioC','').strip()
+            contrasena = request.POST.get('contrasena','').strip()
+            url = request.POST.get('url','').strip()
+            detalles = request.POST.get('detalles','').strip()
+
+            try:
+
+                credencial = models.credenciales.objects.get(nombre_cuenta=nombreCuenta, usuario_cuenta=usuarioCuenta)
+
+                credencialx = models.credenciales()
+                credencialx.nombre_cuenta = nomCuenta
+                credencialx.usuario_cuenta = usuarioC
+                credencialx.contra_cuenta = contrasena
+                credencialx.url = url
+                
+                errores = tiene_errores_credencial(credencialx)
+                    
+
+                if not errores:
+                    t = 'editarcredencial.html'
+                    c = {'okay': True, 'credencial': credencial, 'nomCuenta': nomCuenta, 'usuarioC': usuarioC, 'contrasena': contrasena, 'url': url, 'detalles': detalles}
+                    return render(request,t,c)
+                else:
+                    credencial = models.credenciales.objects.get(nombre_cuenta=nombreCuenta, usuario_cuenta=usuarioCuenta)
+                    print(credencial.nombre_cuenta)
+                    t = 'editarcredencial.html'
+                    c = {'errores': errores, 'credencial': credencial}
+                    return render(request,t,c)
+
+            except:
+                credencial = models.credenciales.objects.get(nombre_cuenta=nombreCuenta, usuario_cuenta=usuarioCuenta)
+                t = 'editarcredencial.html'
+                errores = ['Ocurrio un error, porfavor comunicate con el administrador']
+                c = {'errores': errores, 'credencial': credencial}
+                return render(request,t,c)
+
+        elif request.POST.get("form_type") == 'formDos':
+            nomCuenta = request.POST.get('nomCuenta','').strip()
+            usuarioC = request.POST.get('usuarioC','').strip()
+            contrasena = request.POST.get('contrasena','').strip()
+            url = request.POST.get('url','').strip()
+            detalles = request.POST.get('detalles','').strip()
+            contram = request.POST.get('contrasenaM','').strip()
+            usuariocookie = request.session.get('usuario','').strip()
+
+            try:
+                usuariopw = models.usuarios.objects.get(usuario=usuariocookie)
+                saltbd = usuariopw.salt
+                salt = base64.b64decode(saltbd)
+                key = usuariopw.contra
+                contrades = des(contram,key,salt) # aqui verificas la contraseña cifrafa
+                
+                if contrades:
+                    credencial = models.credenciales.objects.get(nombre_cuenta=nombreCuenta, usuario_cuenta=usuarioCuenta)
+
+                    credencial.nombre_cuenta = nomCuenta
+                    credencial.usuario_cuenta = usuarioC
+                    credencial.contra_cuenta = contrasena
+                    credencial.url = url
+                    credencial.detalles = detalles
+                    credencial.usuario_asociado = usuariopw
+
+                    errores = tiene_errores_credencial(credencial)
+                    
+
+                    if not errores:
+                        iv = os.urandom(16)
+                        contracif = cifrar(contrasena,contram,iv)
+                        contracif = base64.b64encode(contracif).decode('utf-8')        
+                        credencial.contra_cuenta = contracif
+                        iv = base64.b64encode(iv).decode('utf-8')
+                        credencial.iv = iv
+                        credencial.save()
+                        return redirect('/ver_listado')
+
+                    else:
+                        credencial = models.credenciales.objects.get(nombre_cuenta=nombreCuenta, usuario_cuenta=usuarioCuenta)
+                        print(credencial.nombre_cuenta)
+                        t = 'editarcredencial.html'
+                        c = {'errores': errores, 'credencial': credencial}
+                        return render(request,t,c)
+                else:
+                    credencial = models.credenciales.objects.get(nombre_cuenta=nombreCuenta, usuario_cuenta=usuarioCuenta)
+                    t = 'editarcredencial.html'
+                    errores = ['Contraseña invalida']
+                    c = {'okay': True,'erroresf2': errores,'credencial': credencial, 'nomCuenta': nomCuenta, 'usuarioC': usuarioC, 'contrasena': contrasena, 'url': url, 'detalles': detalles}
+                    return render(request,t,c)
+                      
+            except:
+                credencial = models.credenciales.objects.get(nombre_cuenta=nombreCuenta, usuario_cuenta=usuarioCuenta)
+                t = 'editarcredencial.html'
+                errores = ['Ocurrio un error, porfavor comunicate con el administrador']
+                c = {'errores': errores, 'credencial': credencial}
+                return render(request,t,c)
+        
 
 #----------------------------------------------------------------
 @login_requerido
