@@ -254,7 +254,7 @@ def registrar_credencial(request):
             url = request.POST.get('url','').strip()
             detalles = request.POST.get('detalles','').strip()        
 
-            t = 'editarcredencial.html'
+            t = 'registrarcredencial.html'
             c = {'okay':True, 'nomCuenta': nomCuenta, 'usuarioC': usuarioC, 'contrasena': contrasena, 'url': url, 'detalles': detalles}
             return render(request,t,c)
             
@@ -298,17 +298,17 @@ def registrar_credencial(request):
                         return redirect('/ver_listado')
 
                     else:
-                        t = 'editarcredencial.html'
+                        t = 'registrarcredencial.html'
                         c = {'errores': errores, 'nomCuenta': nomCuenta, 'usuarioC': usuarioC, 'contrasena': contrasena, 'url': url, 'detalles': detalles}
                         return render(request,t,c)
                 else:
-                    t = 'editarcredencial.html'
+                    t = 'registrarcredencial.html'
                     errores = ['Contraseña invalida']
                     c = {'okay': True,'erroresf2': errores, 'nomCuenta': nomCuenta, 'usuarioC': usuarioC, 'contrasena': contrasena, 'url': url, 'detalles': detalles, 'contrasenaM': contram}
                     return render(request,t,c)
                       
             except:
-                 t = 'editarcredencial.html'
+                 t = 'registrarcredencial.html'
                  errores = ['Ocurrio un error, porfavor comunicate con el administrador']
                  c = {'errores': errores, 'nomCuenta': nomCuenta, 'usuarioC': usuarioC, 'contrasena': contrasena, 'url': url, 'detalles': detalles, 'contrasenaM': contram}
                  return render(request,t,c)
