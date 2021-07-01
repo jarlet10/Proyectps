@@ -243,7 +243,7 @@ def salir_login(request):
 @login_requerido
 def registrar_credencial(request):
     if request.method == 'GET':
-        t = 'editarcredencial.html'
+        t = 'registrarcredencial.html'
         return render(request,t)
     elif request.method == 'POST':
 
