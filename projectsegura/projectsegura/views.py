@@ -17,10 +17,8 @@ import re
 import requests
     
 def mandar_mensaje_bot_post(mensaje):
-    #token = os.environ.get('token')
-    #chat_id = os.environ.get('chat_id')
-    token = '1862504006:AAEr91Gc0keP4lJkNE59qwK3wAMXrz1CLqU'
-    chat_id = '678557081'
+    token = os.environ.get('token')
+    chat_id = os.environ.get('chat_id')
     datos = {'chat_id': chat_id, 'text': mensaje}
     url = 'https://api.telegram.org/bot'+ token +'/sendMessage'
     response = requests.post(url = url, data = datos)
@@ -35,11 +33,13 @@ def get_client_ip(request):
         ip = request.META.get('REMOTE_ADDR')
     return ip
 
+#----------------------------------------------------------------
 def diferencia_tiempo(tiempoPasado):
     ahora = datetime.datetime.now(timezone.utc)
     diferencia = ahora - tiempoPasado
     return diferencia.seconds
 
+#----------------------------------------------------------------
 #Intentaer 3 intentos por menos de 1 mnuto te bloquea
 def puede_intentar(ip):
     """ Determina si una ip puede volver a intentar enviar el formulario
@@ -69,19 +69,20 @@ def puede_intentar(ip):
             registro_guardado.ultima_peticion = datetime.datetime.now(timezone.utc)
             return False
 
-
+#----------------------------------------------------------------
 def nombre_exite(usuario1): #comprobar si el usuario esta repetido
     usuarioRepetido = models.usuarios.objects.filter(nombre=usuario1.nombre)
     if len(usuarioRepetido) > 0:
         return True
     return False
 
+#----------------------------------------------------------------
 def usuario_exite(usuario1): #comprobar si el usuario esta repetido
     usuarioRepetido = models.usuarios.objects.filter(usuario=usuario1.usuario)
     if len(usuarioRepetido) > 0:
         return True
     return False
-
+#----------------------------------------------------------------
 def tiene_errores_usuario(usuario1,contrac):#recolectar errores jars aqui ves lo de expreciones regulares en python
     errores = []  
     if nombre_exite(usuario1):
@@ -102,7 +103,8 @@ def tiene_errores_usuario(usuario1,contrac):#recolectar errores jars aqui ves lo
         errores.append('La contrasena debe cumplir las politicas')
     return errores
 
-def tiene_errores_credencial(credencial1):#recolectar errores jars aqui ves lo de expreciones regulares en python
+#----------------------------------------------------------------
+def tiene_errores_credencial(credencial1):
     errores = []  
     if credencial1.nombre_cuenta == '':
         errores.append('Nombre de cuenta vacio')
@@ -114,10 +116,12 @@ def tiene_errores_credencial(credencial1):#recolectar errores jars aqui ves lo d
         errores.append('Url vacia')
     return errores
 
+#----------------------------------------------------------------
+
 def registrar_usuario(request):
     if request.method == 'GET':
         t = 'registrar.html'
-        logueado = request.session.get('logueado', False) #redireccionar si ya estas logueado
+        logueado = request.session.get('logueado', False) 
         if logueado:
             return redirect('/ver_listado')
         return render(request,t)
@@ -142,8 +146,6 @@ def registrar_usuario(request):
             salt = os.urandom(16)
             usuariox.contra = cif(contra, salt)
             salt = base64.b64encode(salt).decode('utf-8')
-            print(salt)
-            print(usuariox.contra)
             usuariox.salt = salt
             usuariox.save() #gurdar usuario en base de datos
             request.session['logueado'] = False
@@ -151,16 +153,6 @@ def registrar_usuario(request):
         else:
             c = {'errores': errores, 'usuario': usuariox}
             return render(request,t,c)
-
-""" def iniciar_sesion2(request):
-    if request.method == 'GET':
-        t = 'inicar.html'
-        return render(request,t)
-    elif request.method == 'POST':
-        if request.POST.get("form_type") == 'formOne':
-            return HttpResponse('Hola1')
-        elif request.POST.get("form_type") == 'formTwo':
-            return HttpResponse('Hola2') """
 
 #----------------------------------------------------------------
 
@@ -233,7 +225,7 @@ def iniciar_sesion(request):
                 c = {'errores': error, 'usuario': usuariob, 'contra': contra}
                 return render(request,t,c)
 
-
+#----------------------------------------------------------------
 @login_requerido
 def salir_login(request):
     request.session.flush()
@@ -404,7 +396,6 @@ def editar_cuenta(request):
                     return render(request,t,c)
                 else:
                     credencial = models.credenciales.objects.get(nombre_cuenta=nombreCuenta, usuario_cuenta=usuarioCuenta)
-                    print(credencial.nombre_cuenta)
                     t = 'editarcredencial.html'
                     c = {'errores': errores, 'credencial': credencial}
                     return render(request,t,c)
@@ -457,7 +448,6 @@ def editar_cuenta(request):
 
                     else:
                         credencial = models.credenciales.objects.get(nombre_cuenta=nombreCuenta, usuario_cuenta=usuarioCuenta)
-                        print(credencial.nombre_cuenta)
                         t = 'editarcredencial.html'
                         c = {'errores': errores, 'credencial': credencial}
                         return render(request,t,c)
@@ -493,7 +483,6 @@ def ver_detalles_cuenta(request):
             usuariopw = models.usuarios.objects.get(usuario=usuariocookie)
             pk = usuariopw.id
             credenciales = models.credenciales.objects.all().filter(usuario_asociado=pk).filter(nombre_cuenta=nombreCuenta).filter(usuario_cuenta=usuarioCuenta)
-            #print(credencial.nombre_cuenta)
             c = {'contracifrada': True, 'credenciales': credenciales}
             return render(request,t,c)
         except:
@@ -512,7 +501,6 @@ def ver_detalles_cuenta(request):
                 usuariopw = models.usuarios.objects.get(usuario=usuariocookie)
                 pk = usuariopw.id
                 credenciales = models.credenciales.objects.all().filter(usuario_asociado=pk).filter(nombre_cuenta=nombreCuenta).filter(usuario_cuenta=usuarioCuenta)
-                #print(credencial.nombre_cuenta)
                 c = {'okay': True,'contracifrada': True,'credenciales': credenciales}
                 return render(request,t,c)
             except:
@@ -549,16 +537,15 @@ def ver_detalles_cuenta(request):
                 usuariopw = models.usuarios.objects.get(usuario=usuariocookie)
                 pk = usuariopw.id
                 credenciales = models.credenciales.objects.all().filter(usuario_asociado=pk).filter(nombre_cuenta=nombreCuenta).filter(usuario_cuenta=usuarioCuenta)
-                #print(credencial.nombre_cuenta)
                 errores = ['Contraseña invalida']
                 c = {'okay': True,'contracifrada': True,'erroresf2': errores,'credenciales': credenciales}
                 return render(request,t,c)
+                
         elif request.POST.get("form_type") == 'formTres':
             try:
                 usuariopw = models.usuarios.objects.get(usuario=usuariocookie)
                 pk = usuariopw.id
                 credenciales = models.credenciales.objects.all().filter(usuario_asociado=pk).filter(nombre_cuenta=nombreCuenta).filter(usuario_cuenta=usuarioCuenta)
-                #print(credencial.nombre_cuenta)
                 c = {'contracifrada': True, 'credenciales': credenciales}
                 return render(request,t,c)
             except:

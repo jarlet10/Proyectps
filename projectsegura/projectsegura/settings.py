@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 #os.environ.get('llave')
-SECRET_KEY = 'django-insecure-v6(_jdh-61g#s-zc^^#ma*z(d)ni7t37()8ni$4jo!ho+hz8au'
+SECRET_KEY = os.environ.get('llave')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -81,8 +81,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'projectsegura',
         'USER': 'general',
-        #'PASSWORD': os.environ.get('cont'),
-        'PASSWORD': '#PrograSegura123#',
+        'PASSWORD': os.environ.get('cont'),
         'HOST': 'localhost',
         'PORT': '3306',
     }
