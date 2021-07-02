@@ -152,7 +152,7 @@ def registrar_usuario(request):
             usuariox.salt = salt
             usuariox.save() #gurdar usuario en base de datos
             request.session['logueado'] = False
-            logging.info('Usuario logueado')
+            logging.info(f'Usuario {usuario} registrado ')
             return redirect('/iniciar_sesion')
         else:
             c = {'errores': errores, 'usuario': usuariox}
@@ -297,6 +297,7 @@ def registrar_credencial(request):
                         iv = base64.b64encode(iv).decode('utf-8')
                         credencialx.iv = iv
                         credencialx.save()
+                        logging.info(f'Credencial de usuario {usuariocookie} registrada')
                         return redirect('/ver_listado')
 
                     else:
