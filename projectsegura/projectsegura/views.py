@@ -11,10 +11,13 @@ from projectsegura.decoradores import login_requerido
 from projectsegura.passHash import cif, des
 from projectsegura.cifradoSimetrico import cifrar, descifrar, generar_llave_aes_from_password
 import re
-
+import logging
 #----------------------------------------------------------------------------
 #Para enviar mensaje a telegram bot
 import requests
+logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s',
+                    datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO,
+                    filename='bitacora.log', filemode='a')
     
 def mandar_mensaje_bot_post(mensaje):
     token = os.environ.get('token')
@@ -149,6 +152,7 @@ def registrar_usuario(request):
             usuariox.salt = salt
             usuariox.save() #gurdar usuario en base de datos
             request.session['logueado'] = False
+            logging.info('Usuario logueado')
             return redirect('/iniciar_sesion')
         else:
             c = {'errores': errores, 'usuario': usuariox}
@@ -212,6 +216,7 @@ def iniciar_sesion(request):
                     request.session['usuario'] = usuariob
                     #respuesta = redirect('/ver_listado')
                     #respuesta.set_cookie('usuario', usuariob, max_age=None, httponly=True, samesite='Strict')
+                    logging.info(f'{usuariob} inició sesion')
                     return redirect('/ver_listado')
                 else:
                     t = 'iniciar_sesion.html'
@@ -223,6 +228,7 @@ def iniciar_sesion(request):
                 t = 'iniciar_sesion.html'
                 error = ['Intentos agotados, por favor espere 3 minutos']
                 c = {'errores': error, 'usuario': usuariob, 'contra': contra}
+                logging.warning(f'{usuariob} excedió los intentos')
                 return render(request,t,c)
 
 #----------------------------------------------------------------
