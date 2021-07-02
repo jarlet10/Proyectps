@@ -252,6 +252,10 @@ def registrar_credencial(request):
             url = request.POST.get('url','').strip()
             detalles = request.POST.get('detalles','').strip()        
 
+            if contrasena == 'generar':
+                contraGenerada = base64.b64encode(os.urandom(7)).decode('utf-8')
+                contrasena = contraGenerada + "#"
+
             t = 'registrarcredencial.html'
             c = {'okay':True, 'nomCuenta': nomCuenta, 'usuarioC': usuarioC, 'contrasena': contrasena, 'url': url, 'detalles': detalles}
             return render(request,t,c)
