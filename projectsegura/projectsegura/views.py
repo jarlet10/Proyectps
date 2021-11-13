@@ -528,6 +528,7 @@ def ver_detalles_cuenta(request):
             contrades = des(contram,key,salt) # aqui verificas la contraseña cifrafa
                 
             if contrades:
+                
                 try:
                     pk = usuariopw.id
                     credenciales = models.credenciales.objects.all().filter(usuario_asociado=pk).filter(nombre_cuenta=nombreCuenta).filter(usuario_cuenta=usuarioCuenta)
